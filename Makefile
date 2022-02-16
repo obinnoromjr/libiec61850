@@ -167,6 +167,9 @@ dynlib:	$(DYN_LIB_NAME)
 examples:
 	cd examples; $(MAKE)
 
+battery:
+	cd battery; $(MAKE)
+
 $(LIB_NAME):	$(LIB_OBJS)
 	$(AR) r $(LIB_NAME) $(LIB_OBJS)
 	$(RANLIB) $(LIB_NAME)
