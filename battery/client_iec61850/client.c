@@ -11,24 +11,6 @@
 
 #include "hal_thread.h"
 
-void
-reportCallbackFunction(void* parameter, ClientReport report)
-{
-    MmsValue* dataSetValues = ClientReport_getDataSetValues(report);
-
-    printf("received report for %s\n", ClientReport_getRcbReference(report));
-
-    int i;
-    for (i = 0; i < 4; i++) {
-        ReasonForInclusion reason = ClientReport_getReasonForInclusion(report, i);
-
-        if (reason != IEC61850_REASON_NOT_INCLUDED) {
-            printf("  GGIO1.SPCSO%i.stVal: %i (included for reason %i)\n", i,
-                    MmsValue_getBoolean(MmsValue_getElement(dataSetValues, i)), reason);
-        }
-    }
-}
-
 void closeConnection(IedConnection connection, bool error, char* hostname, int tcpPort) {
 	if (error)
 		printf("Failed to connect to %s:%i\n", hostname, tcpPort);
@@ -76,15 +58,13 @@ int main(int argc, char** argv) {
         }
 		
         /* write a variable to the server */
-        // value = MmsValue_newFloat(10.0);
 		value = MmsValue_newVisibleString("NewBattery");
-        // IedConnection_writeObject(con, &error, "testmodelBattery/ZBAT.Amp.mag.f", IEC61850_FC_MX, value);
         IedConnection_writeObject(con, &error, "testmodelBattery/ZBAT.NamPlt.vendor", IEC61850_FC_DC, value);
 
         if (error != IED_ERROR_OK)
             printf("failed to write testmodelBattery/ZBAT.NamPlt.vendor (error code: %i)\n", error);
 		
-		// I added this to test !!!!!
+		// read variable that was just written to server
 		MmsValue* secondValue = IedConnection_readObject(con, &error, "testmodelBattery/ZBAT.NamPlt.vendor", IEC61850_FC_DC);
 		
 		if (value != NULL) {
@@ -94,7 +74,7 @@ int main(int argc, char** argv) {
 				printf("read string value: %s\n", sval);
 			}
 		} else {
-			printf("SECONDVALUE == NULL!!!!\n");
+			printf("Error: The string is NULL\n");
 		}
 
         MmsValue_delete(value);
