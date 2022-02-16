@@ -1,7 +1,7 @@
 /*
- *  server_example_dynamic.c
+ *  server.c
  *
- *  This example shows how to build a data model at runtime by API calls.
+ *  Builds a battery data model at runtime by API calls
  *
  */
 
