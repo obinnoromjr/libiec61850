@@ -162,7 +162,7 @@ dynlib: CFLAGS += -fPIC
 
 dynlib:	$(DYN_LIB_NAME)
 
-.PHONY:	examples
+.PHONY:	examples battery
 
 examples:
 	cd examples; $(MAKE)

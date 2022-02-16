@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     if (error == IED_ERROR_OK) {
 
         /* read an analog measurement value from server */
-        /* MmsValue* value = IedConnection_readObject(con, &error, "testmodelBattery/ZBAT.Vol.mag.f", IEC61850_FC_MX);
+        MmsValue* value = IedConnection_readObject(con, &error, "testmodelBattery/ZBAT.Vol.mag.f", IEC61850_FC_MX);
 
         if (value != NULL) {
 
@@ -73,11 +73,11 @@ int main(int argc, char** argv) {
             }
 
             MmsValue_delete(value);
-        } */
+        }
 		
         /* write a variable to the server */
         // value = MmsValue_newFloat(10.0);
-		MmsValue* value = MmsValue_newVisibleString("NewBattery");
+		value = MmsValue_newVisibleString("NewBattery");
         // IedConnection_writeObject(con, &error, "testmodelBattery/ZBAT.Amp.mag.f", IEC61850_FC_MX, value);
         IedConnection_writeObject(con, &error, "testmodelBattery/ZBAT.NamPlt.vendor", IEC61850_FC_DC, value);
 

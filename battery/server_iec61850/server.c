@@ -18,6 +18,7 @@ void LogicalNodeInfo(LogicalNode* lNode);
 void create_ZBAT_LogicalNode(const char* node_name, LogicalDevice* device_name);
 void create_ZBTC_LogicalNode(const char* node_name, LogicalDevice* device_name);
 void create_ZINV_LogicalNode(const char* node_name, LogicalDevice* device_name);
+void create_battery_instance(const char* zbat_name, const char* zbtc_name, const char* zinv_name, LogicalDevice* device_name);
 
 int main(int argc, char** argv) {
 
@@ -41,7 +42,6 @@ int main(int argc, char** argv) {
 	LogicalNode* lln0 = LogicalNode_create("LLN0", Battery);
 	LogicalNodeInfo(lln0);
 	
-	
 	// create battery instance
 	create_battery_instance("ZBAT", "ZBTC", "ZINV", Battery);
 	
@@ -49,9 +49,9 @@ int main(int argc, char** argv) {
      * choose values
      ********************/
 	 
-	 // LogicalNode* ZBAT = LogicalDevice_getLogicalNode(Battery, "ZBAT");
-	 // Logical
-	 
+	 LogicalNode* ZBAT = LogicalDevice_getLogicalNode(Battery, "ZBAT");
+	 DataObject*  Vol  = (DataObject*) ModelNode_getChild( (ModelNode*) ZBAT, "Vol");
+
 	 DataAttribute* voltageValue     = (DataAttribute*) ModelNode_getChild( (ModelNode*) Vol, "mag.f");
 	 DataAttribute* voltageTimeStamp = (DataAttribute*) ModelNode_getChild( (ModelNode*) Vol, "t");
 
@@ -166,8 +166,8 @@ void create_ZBTC_LogicalNode(const char* node_name, LogicalDevice* device_name) 
 
 	CDC_ENG_create("BatChaTyp", (ModelNode *) ZBTC, 0);
 
-	CDC_ASG_create("ReChaRte",  (ModelNode *) ZBTC, 0);
-	CDC_ASG_create("BatChaPwr", (ModelNode *) ZBTC, 0);
+	CDC_ASG_create("ReChaRte",  (ModelNode *) ZBTC, 0, false);
+	CDC_ASG_create("BatChaPwr", (ModelNode *) ZBTC, 0, false);
 	CDC_ENG_create("BatChaMod", (ModelNode *) ZBTC, 0);
 
 	CDC_MV_create("ChaV",       (ModelNode *) ZBTC, 0, false);
