@@ -49,11 +49,21 @@ int main(int argc, char** argv) {
      * choose values
      ********************/
 	 
-	 LogicalNode* ZBAT = LogicalDevice_getLogicalNode(Battery, "ZBAT");
-	 DataObject*  Vol  = (DataObject*) ModelNode_getChild( (ModelNode*) ZBAT, "Vol");
+	LogicalNode* ZBAT = LogicalDevice_getLogicalNode(Battery, "ZBAT");
 
-	 DataAttribute* voltageValue     = (DataAttribute*) ModelNode_getChild( (ModelNode*) Vol, "mag.f");
-	 DataAttribute* voltageTimeStamp = (DataAttribute*) ModelNode_getChild( (ModelNode*) Vol, "t");
+	DataObject*  Vol  = (DataObject*) ModelNode_getChild( (ModelNode*) ZBAT, "Vol");
+	DataObject*  Amp  = (DataObject*) ModelNode_getChild( (ModelNode*) ZBAT, "Amp");
+	DataObject*  AhrRtg   = (DataObject*) ModelNode_getChild( (ModelNode*) ZBAT, "AhrRtg");
+	DataObject*  MaxBatA  = (DataObject*) ModelNode_getChild( (ModelNode*) ZBAT, "MaxBatA");
+
+
+	DataAttribute* voltageValue     = (DataAttribute*) ModelNode_getChild( (ModelNode*) Vol, "mag.f");
+	DataAttribute* voltageTimeStamp = (DataAttribute*) ModelNode_getChild( (ModelNode*) Vol, "t");
+
+	DataAttribute* currentValue      = (DataAttribute*) ModelNode_getChild( (ModelNode*) Amp, "mag.f");
+
+	DataAttribute* capacityValue     = (DataAttribute*) ModelNode_getChild( (ModelNode*) AhrRtg, "setMag.f");
+	DataAttribute* discharge_current = (DataAttribute*) ModelNode_getChild( (ModelNode*) MaxBatA, "setMag.f");
 
     /*********************
      * run server
@@ -84,6 +94,10 @@ int main(int argc, char** argv) {
 
 	    IedServer_updateUTCTimeAttributeValue(iedServer, voltageTimeStamp, Hal_getTimeInMs());
 	    IedServer_updateFloatAttributeValue(iedServer, voltageValue, val);
+
+		IedServer_updateFloatAttributeValue(iedServer, currentValue, val);
+		IedServer_updateFloatAttributeValue(iedServer, capacityValue, val);
+		IedServer_updateFloatAttributeValue(iedServer, discharge_current, val);
 
 	    IedServer_unlockDataModel(iedServer);
 
@@ -166,7 +180,7 @@ void create_ZBTC_LogicalNode(const char* node_name, LogicalDevice* device_name) 
 
 	CDC_ENG_create("BatChaTyp", (ModelNode *) ZBTC, 0);
 
-	CDC_ASG_create("ReChaRte",  (ModelNode *) ZBTC, 0, false);
+	CDC_ASG_create("ReChaRte",  (ModelNode *) ZBTC, 0, true);
 	CDC_ASG_create("BatChaPwr", (ModelNode *) ZBTC, 0, false);
 	CDC_ENG_create("BatChaMod", (ModelNode *) ZBTC, 0);
 
@@ -185,7 +199,8 @@ void create_ZINV_LogicalNode(const char* node_name, LogicalDevice* device_name) 
 	CDC_ASG_create("VarRtg",     (ModelNode *) ZINV, 0, false);
 	CDC_ENG_create("SwTyp",      (ModelNode *) ZINV, 0);
 	CDC_ENG_create("CoolTyp",    (ModelNode *) ZINV, 0);
-							     
+
+	CDC_ENS_create("GridModSt",  (ModelNode *) ZINV, 0); 				     
 	CDC_SPS_create("Stdby",      (ModelNode *) ZINV, 0);
 	CDC_SPS_create("CurLev",     (ModelNode *) ZINV, 0);
 	CDC_ENG_create("CmutTyp",    (ModelNode *) ZINV, 0);
@@ -194,11 +209,11 @@ void create_ZINV_LogicalNode(const char* node_name, LogicalDevice* device_name) 
 	CDC_ENG_create("GridMod",    (ModelNode *) ZINV, 0);
 							     
 	CDC_ENG_create("ACTyp",      (ModelNode *) ZINV, 0);
-	CDC_ASG_create("OutWSet",    (ModelNode *) ZINV, 0, false); 
+	CDC_ASG_create("OutWSet",    (ModelNode *) ZINV, 0, true); 
 	CDC_ASG_create("OutVarSet",  (ModelNode *) ZINV, 0, false); 
 	CDC_ASG_create("OutPFSet",   (ModelNode *) ZINV, 0, false); 
 	CDC_ASG_create("OutHzSet",   (ModelNode *) ZINV, 0, false); 
-	CDC_ASG_create("InALim",     (ModelNode *) ZINV, 0, false); 
+	CDC_ASG_create("InALim",     (ModelNode *) ZINV, 0, true); 
 	CDC_ASG_create("InVLim",     (ModelNode *) ZINV, 0, false); 
 	CDC_ENG_create("PhACnfg",    (ModelNode *) ZINV, 0);
 	CDC_ENG_create("PhBCnfg",    (ModelNode *) ZINV, 0);
